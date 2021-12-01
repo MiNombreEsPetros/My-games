@@ -1,0 +1,1037 @@
+<!-- Created by Igor Makarsky -->
+
+<!doctype html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+  <title>Minesweeper</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css?family=Nunito:800" rel="stylesheet">
+  <style>/* Created by Igor Makarsky */
+
+html {
+    overflow: hidden;
+}
+
+a {
+    color: #212121
+}
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Nunito', sans-serif;
+    font-size: 1em;
+    text-align: center;
+    color: #212121;
+}
+
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    width: 100vw;
+}
+
+.app-container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    width: 100vw;
+    background-color: #E0E0E0;
+}
+
+.side {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-grow: 1;
+}
+
+main {
+    display: flex;
+    text-align: center;
+    background-color: #1A237E;
+    border-radius: 6px;
+}
+
+.header-item {
+    margin: auto;
+}
+
+.label {
+    background-color: #212121;
+    padding: 6px;
+    border-radius: 6px;
+    color: #EEEEEE;
+}
+
+.square-container {
+    height: 100vw;
+    width: 100vw;
+    /* Disable text selection */
+    user-select: none;
+    padding-top: 3px;
+}
+
+.button-area {
+    margin: auto;
+}
+
+.madeby-area {
+    margin: auto;
+}
+
+.flag-icon:before {
+    content: "";
+    position: absolute;
+    top: 15%;
+    right: 34%;
+    display: block;
+    height: 70%;
+    width: 6%;
+    background-color: #EEEEEE;
+}
+
+.flag-icon--broken:before {
+    transform: translateX(-.5vw) rotate(20deg);
+}
+
+.square--open.flag-icon:before {
+    background-color: #212121;
+}
+
+.square.flag-icon {
+    position: relative;
+}
+
+.flag-icon:after {
+    content: "";
+    position: absolute;
+    top: 16%;
+    right: 40%;
+    display: block;
+    border-style: solid;
+    border-width: 2vw 3vw 2vw 0;
+    border-color: transparent #f44336 transparent transparent;
+}
+
+.flag-icon--broken:after {
+    transform: translateX(-.5vw) rotate(20deg) translateX(4.2vw) rotateY(160deg);
+    border-color: transparent #212121 transparent transparent;
+}
+
+.disabled {
+    pointer-events: none;
+}
+
+.hidden {
+    display: none;
+}
+
+.emoji {
+    background-repeat: no-repeat;
+    background-size: 75%;
+    background-position: center;
+}
+
+.emoji--smile {
+    background-image: url('https://cdn.jsdelivr.net/emojione/assets/5.0/png/unicode/64/1f642.png');
+}
+
+.emoji--cool {
+    background-image: url('https://cdn.jsdelivr.net/emojione/assets/5.0/png/unicode/64/1f60e.png');
+}
+
+.emoji--o {
+    background-image: url('https://cdn.jsdelivr.net/emojione/assets/5.0/png/unicode/64/1f632.png');
+}
+
+.emoji--dead {
+    background-image: url('https://cdn.jsdelivr.net/emojione/assets/5.0/png/unicode/64/1f480.png');
+}
+
+.square {
+    justify-content: center;
+    align-items: center;
+    font-size: 10vw;
+    vertical-align: middle;
+    box-sizing: border-box;
+    width: 11%;
+    height: 11%;
+    display: inline-flex;
+    background-color: #3F51B5;
+    box-shadow: 0.5vw 0.5vw 0.5vw 0.5vw #5C6BC0 inset, -0.5vw -0.5vw 0.5vw 0.5vw #283593 inset;
+    border-radius: 12%;
+    /* transition: box-shadow .1s ease-in-out, background-color .1s ease-in-out; */
+}
+
+.square:hover {
+    opacity: 0.9;
+}
+
+.square.square--open {
+    box-shadow: initial;
+    background-color: #EEEEEE;
+    border: .5px solid #1A237E;
+}
+
+.square--open:hover {
+    opacity: 1;
+}
+
+.square--open1 {
+    color: #3F51B5;
+}
+
+.square--open2 {
+    color: #4CAF50;
+}
+
+.square--open3 {
+    color: #f44336;
+}
+
+.square--open4 {
+    color: #673AB7;
+}
+
+.square--open5 {
+    color: #b71c1c;
+}
+
+.square--open6 {
+    color: #009688;
+}
+
+.square--open7 {
+    color:black;
+}
+
+.square--open8 {
+    color: #757575;
+}
+
+.btn {
+    outline: none;
+    border: none;
+    cursor: pointer;
+    height: 11vw;
+    width: 11vw;
+    color: #EEEEEE;
+}
+
+.square--bomb {
+    background-image: url('https://cdn.jsdelivr.net/emojione/assets/5.0/png/unicode/64/1f4a3.png');
+}
+
+.square--exploded {
+    background-image: url('https://cdn.jsdelivr.net/emojione/assets/5.0/png/unicode/64/1f4a5.png');
+}
+
+h2 {
+    margin: 0;
+}
+
+p {
+    margin: 6px 0;
+}
+
+table {
+    width: 100%;
+}
+
+.popup-container {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    left: 0;
+    top: 0;
+    height: 100vh;
+    width: 100vw;
+    transition: height .5s;
+}
+
+.popup-container.hidden {
+    height: 0vh;
+}
+
+.perspective {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    margin: 0 auto;
+    height: 95vh;
+    transition: transform .6s;
+}
+
+.popup-container.hidden .perspective {
+    transform: translateY(-100vh);
+}
+
+.popup {
+    background: white;
+    border-radius: 12px;
+    padding: 12px;
+    transform: rotateX(0deg);
+    opacity: 1;
+    transition: transform .2s ease-in-out, opacity .15s ease-in-out;
+    width: 90vw;
+}
+
+.popup-container.hidden .popup {
+    transform: rotateX(-90deg);
+    opacity: 0;
+}
+
+.btn-close {
+    position: absolute;
+    right: 6px;
+    display: inline-block;
+    font-size: 24px;
+    height: 24px;
+    width: 24px;
+    line-height: 24px;
+    color: #212121;
+}
+
+@media only screen and (max-height: 450px) and (orientation: landscape) {
+
+    .app-container {
+        flex-direction: row;
+    }
+
+    header {
+        flex-direction: column-reverse;
+    }
+
+    footer {
+        flex-direction: column;
+    }
+
+    .main-item {
+        display: flex;
+        height: 100vh;
+        width: 100vh;
+    }
+
+    .square-container {
+        height: 100vh;
+        width: 100vh;
+        padding: 0 1px;
+    }
+
+    .square {
+        font-size: 10vh;
+        width: 11.11vh;
+        height: 11.11vh;
+        box-shadow: 0.5vh 0.5vh 0.5vh 0.5vh #5C6BC0 inset, -0.5vh -0.5vh 0.5vh 0.5vh #283593 inset;
+    }
+
+    .madeby-area {
+        display: none;
+    }
+
+    .flag-icon:after {
+        border-width: 2vh 3vh 2vh 0;
+    }
+
+    .flag-icon--broken:before {
+        transform: translateX(-.5vh) rotate(20deg);
+    }
+    
+    .flag-icon--broken:after {
+        transform: translateX(-.5vh) rotate(20deg) translateX(4.2vh) rotateY(160deg);
+    }
+}
+
+@media only screen and (min-width: 450px) and (min-height: 450px) {
+
+    .app-container {
+        display: flex;
+        height: 480px;
+        width: 320px;
+        border-radius: 12px;
+    }
+
+    .main-item {
+        display: flex;
+        height: 320px;
+        width: 320px;
+    }
+
+    .square-container {
+        height: 320px;
+        width: 320px;
+        padding: 1px 0;
+    }
+
+    .square {
+        font-size: 32px;
+        width: 35.5px;
+        height: 35.5px;
+        box-shadow: 2px 2px 2px 2px #5C6BC0 inset, -2px -2px 2px 2px #283593 inset;
+    }
+    
+    .flag-icon:after {
+        border-width: 7px 10px 7px 0;
+    }
+
+    .popup {
+        width: 284px;
+    }
+
+    .flag-icon--broken:before {
+        transform: translateX(-4px) rotate(20deg);
+    }
+    
+    .flag-icon--broken:after {
+        transform: translateX(-4px) rotate(20deg) translateX(14px) rotateY(160deg);
+    }
+}</style>
+</head>
+
+<body>
+  <div class="container">
+    <div class="app-container">
+      <header class="side flex-item">
+        <div id="flag-counter" class="header-item label">010</div>
+        <div class="header-item">
+          <button id="restart-btn" class="square btn emoji emoji--smile"></button>
+        </div>
+        <div class="header-item">
+          <button id="enable-flag-btn" class="square btn flag-icon"></button>
+        </div>
+        <div id="stopwatch" class="header-item label">000</div>
+      </header>
+      <main class="flex-item">
+        <div class="square-container"></div>
+      </main>
+      <footer class="side flex-item">
+        <div class="button-area">
+          <button class="square btn" onclick="this.nextSibling.nextSibling.classList.remove('hidden')">?
+          </button>
+          <div class="popup-container hidden" onclick="this.classList.add('hidden')">
+            <div class="perspective">
+              <div class="popup">
+                <div class="btn btn-close">&#10006;</div>
+                <div class="hint">
+                  <h2>Controls</h2>
+                  <table>
+                    <tr>
+                      <td rowspan="2">Mobile</td>
+                      <td>Tap an empty square to reveal it.</td>
+                    </tr>
+                    <tr>
+                      <td>Long-press an empty square to flag it.</td>
+                    </tr>
+                    <tr>
+                      <td rowspan="2">Desktop</td>
+                      <td>Left-click an empty square to reveal it.</td>
+                    </tr>
+                    <tr>
+                      <td>Right-click an empty square to flag it.</td>
+                    </tr>
+                  </table>
+                  <br>
+                  <div>
+                    <a href="#" onclick="toggleHint(event)">Rules</a>
+                  </div>
+                </div>
+
+                <div class="hint hidden">
+                  <h2>Rules</h2>
+                  <p>
+                    The game is played by revealing squares of the grid by clicking or otherwise indicating each square. If a square containing a mine is revealed, the player loses the game. If no mine is revealed, a digit is instead displayed in the square, indicating how many adjacent squares contain mines; if no mines are adjacent, the square becomes blank, and all adjacent squares will be recursively revealed. The player uses this information to deduce the contents of other squares, and may either safely reveal each square or mark the square as containing a mine.
+                  </p>
+                  <div>
+                    <a href="#" onclick="toggleHint(event)">Controls</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="madeby-area">Made by <a href="https://www.sololearn.com/Profile/779917">Igor Makarsky</a></div>
+      </footer>
+    </div>
+  </div>
+
+<script>// Created by Igor Makarsky
+
+var rowNumber = 9;
+var bombsNumber = 10;
+
+var UI = (function() {
+    var DOMstrings = {
+        enableFlagBtn: '#enable-flag-btn',
+        flagIcon: 'flag-icon',
+        flagIconBroken: 'flag-icon--broken',
+        flagCounter: '#flag-counter',
+        restartBtn: '#restart-btn',
+        container: '.square-container',
+        disabled: 'disabled',
+        stopwatch: '#stopwatch',
+        squareClass: 'square',
+        bomb: 'square--bomb',
+        exploded: 'square--exploded',
+        open: 'square--open',
+        open0: 'square--open0',
+        open1: 'square--open1',
+        open2: 'square--open2',
+        open3: 'square--open3',
+        open4: 'square--open4',
+        open5: 'square--open5',
+        open6: 'square--open6',
+        open7: 'square--open7',
+        open8: 'square--open8',
+        emoji: 'emoji',
+        emojiSmile: 'emoji--smile',
+        emojiCool: 'emoji--cool',
+        emojiO: 'emoji--o',
+        emojiDead: 'emoji--dead',
+        hidden: 'hidden'
+    };
+
+    var emojiClasses = [DOMstrings.emojiSmile, DOMstrings.emojiCool, DOMstrings.emojiO, DOMstrings.emojiDead];
+    var stopwatchInterval = null;
+    var flagCounter = bombsNumber;
+    var squares = null;
+
+    function init() {
+        var container = document.querySelector(DOMstrings.container);
+        var numberOfSquares = rowNumber * rowNumber;
+
+        for (var i = 0; i < numberOfSquares; i++) {
+            var square = document.createElement('div');
+            square.classList.add(DOMstrings.squareClass);
+            container.appendChild(square);
+        }
+
+        squares = Array.from(container.getElementsByClassName(DOMstrings.squareClass));
+    }
+
+    function getIndexOfSquare(squareElement) {
+        return squares.indexOf(squareElement);
+    }
+
+    function openSquares(squareData) {
+        if (stopwatchInterval === null) {
+            stopwatchInterval = setInterval(updateStopwatch, 1000);
+        }
+
+        squareData.forEach(function(square) {
+            var squareElement = squares[square.index];
+            squareElement.classList.add(DOMstrings.open);
+
+            if (typeof (square.value) === 'number' && square.value > 0) {
+                squareElement.classList.add(DOMstrings['open' + square.value]);
+                squareElement.textContent = square.value;
+            } else if (square.value === 'b') {
+                squareElement.classList.add(DOMstrings.exploded, DOMstrings.emoji);
+                document.querySelector(DOMstrings.container).classList.add(DOMstrings.disabled);
+                showEmojiDead();
+                stopStopwatch();
+            }
+        });
+    }
+
+    function showFlagAndBombValidation(bombsAndWrongFlags) {
+        bombsAndWrongFlags.forEach(function(square) {
+            var squareElement = squares[square.index];
+
+            if (square.value === 'b') {
+                squareElement.classList.add(DOMstrings.bomb, DOMstrings.emoji);
+            } else if (square.value === 'f') {
+                squareElement.classList.add(DOMstrings.flagIconBroken);
+            }
+        });
+    }
+
+    function showWin() {
+        stopStopwatch();
+        document.querySelector(DOMstrings.container).classList.add(DOMstrings.disabled);
+        showEmojiCool();
+    }
+
+    function updateStopwatch() {
+        var stopwatch = document.querySelector(DOMstrings.stopwatch);
+        var time = parseInt(stopwatch.innerText);
+        ++time;
+
+        if (time < 1000) {
+            stopwatch.innerText = ('00' + time).slice(-3);
+        }
+    }
+
+    function stopStopwatch() {
+        clearInterval(stopwatchInterval);
+        stopwatchInterval = null;
+    }
+
+    function resetStopwatch() {
+        stopStopwatch();
+        document.querySelector(DOMstrings.stopwatch).innerText = '000';
+    }
+
+    function updateFlagCounterUI() {
+        if (flagCounter < 0) {
+            var flagCounterUI = ('00' + -flagCounter).slice(-3).split('');
+            flagCounterUI.splice(0, 1, '-');
+            document.querySelector(DOMstrings.flagCounter).innerText = flagCounterUI.join('');
+        } else {
+            document.querySelector(DOMstrings.flagCounter).innerText = ('00' + flagCounter).slice(-3);
+        }
+    }
+
+    function resetFlagCounterUI() {
+        document.querySelector(DOMstrings.flagCounter).innerText = ('000' + flagCounter).slice(-3);
+    }
+
+    function putFlag(squareElement) {
+        flagCounter--;
+        squareElement.classList.add(DOMstrings.flagIcon);
+        updateFlagCounterUI();
+    }
+
+    function removeFlag(squareElement) {
+        flagCounter++;
+        squareElement.classList.remove(DOMstrings.flagIcon);
+        updateFlagCounterUI();
+    }
+
+    function restart() {
+        resetStopwatch();
+        disableFlagEnabled();
+        flagCounter = bombsNumber;
+        resetFlagCounterUI();
+
+        squares.forEach(function(square) {
+            square.textContent = '';
+            square.className = DOMstrings.squareClass;
+        });
+        document.querySelector(DOMstrings.container).classList.remove(DOMstrings.disabled)
+        showEmojiSmile();
+    }
+
+    function hideEmojis() {
+        emojiClasses.forEach(function(emojiClass) {
+            document.querySelector(DOMstrings.restartBtn).classList.remove(emojiClass);
+        });
+    }
+
+    function toggleEmojiO() {
+        document.querySelector(DOMstrings.restartBtn).classList.toggle(DOMstrings.emojiO);
+        document.querySelector(DOMstrings.restartBtn).classList.toggle(DOMstrings.emojiSmile);
+    }
+
+    function showEmojiDead() {
+        hideEmojis();
+        document.querySelector(DOMstrings.restartBtn).classList.add(DOMstrings.emojiDead);
+    }
+
+    function showEmojiCool() {
+        hideEmojis();
+        document.querySelector(DOMstrings.restartBtn).classList.add(DOMstrings.emojiCool);
+    }
+
+    function showEmojiSmile() {
+        hideEmojis();
+        document.querySelector(DOMstrings.restartBtn).classList.add(DOMstrings.emojiSmile);
+    }
+
+    function disableFlagEnabled() {
+        document.querySelector(DOMstrings.enableFlagBtn).classList.remove(DOMstrings.open);
+    }
+
+    return {
+        init,
+        getIndexOfSquare,
+        putFlag,
+        removeFlag,
+        openSquares,
+        getDOMstrings: function() {
+            return DOMstrings;
+        },
+        toggleFlagEnabled: function() {
+            document.querySelector(DOMstrings.enableFlagBtn).classList.toggle(DOMstrings.open);
+        },
+        restart,
+        toggleEmojiO,
+        showWin,
+        showFlagAndBombValidation
+    };
+})();
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+var Game = (function() {
+    var isFlagEnabled = false;
+    var squares = [];
+    var flags = [];
+
+    function init() {
+        squares = [];
+
+        for (var i = 0; i < rowNumber; i++) {
+            squares[i] = [];
+
+            for (var j = 0; j < rowNumber; j++) {
+                squares[i][j] = {value: 0, isOpen: false};
+            }
+        }
+
+        for (var i = 0; i < bombsNumber; i++) {
+            var randomRow = Math.floor(Math.random() * rowNumber);
+            var randomCol = Math.floor(Math.random() * rowNumber);
+
+            if (squares[randomRow][randomCol].value === 'b') {
+                i--;
+                continue;
+            }
+
+            squares[randomRow][randomCol].value = 'b';
+            incrementAdjacentSquares(randomRow, randomCol);
+        }
+        // helps with debugging
+        // console.table(squares.map((i) => i.map(j => j.value)));
+    }
+
+    function incrementAdjacentSquares(row, col) {
+        var adjacentSquares = [
+            squares[row - 1] && squares[row - 1][col - 1],
+            squares[row - 1] && squares[row - 1][col],
+            squares[row - 1] && squares[row - 1][col + 1],
+            squares[row] && squares[row][col - 1],
+            squares[row] && squares[row][col + 1],
+            squares[row + 1] && squares[row + 1][col - 1],
+            squares[row + 1] && squares[row + 1][col],
+            squares[row + 1] && squares[row + 1][col + 1]
+        ];
+
+        adjacentSquares.forEach(function(square) {
+            doesSquareHaveNumber(square) ? square.value++ : false;
+        });
+    }
+
+    function doesSquareHaveNumber(square) {
+        return square && typeof square.value === 'number';
+    }
+
+    function getSquarePositionByIndex(index) {
+        var row = Math.floor(index / rowNumber);
+        var col = index % rowNumber;
+
+        if (isNaN(row) || isNaN(col) || row < 0 || col < 0 || row >= rowNumber || col >= rowNumber) {
+            return false;
+        }
+
+        return {row, col};
+    }
+
+    function getSquareIndexByCoords(coords) {
+        var i = coords.row * rowNumber + coords.col;
+
+        if (coords.row < 0 || coords.col < 0 || coords.row >= rowNumber || coords.col >= rowNumber) {
+            return false;
+        }
+
+        return i;
+    }
+
+    function toggleFlag(index) {
+        var squarePos = getSquarePositionByIndex(index);
+
+        return toggleFlagOnSquare(index, squarePos.row, squarePos.col);
+    }
+
+    function toggleFlagOnSquare(index, row, col) {
+        var isFlagSet = flags.some(function(el) {return el.index === index;});
+
+        if (isFlagSet) {
+            removeFlag(index);
+            return false;
+        } else {
+            putFlag(index, row, col);
+            return true;
+        }
+    }
+
+    function putFlag(index, row, col) {
+        flags.push({value: 'f', index, row, col});
+    }
+
+    function removeFlag(index) {
+        flags = flags.filter(function(el) {return el.index !== index;});
+    }
+
+    function openSquaresByIndex(i) {
+        var position = getSquarePositionByIndex(i);
+        var isFlagSet = flags.some(function(el) {return el.index === i;});
+
+        if (!position || isFlagSet) {
+            return [];
+        }
+
+        var square = squares[position.row][position.col];
+
+        if (square.isOpen) {
+            return [];
+        }
+
+        square.isOpen = true;
+        var squaresToOpen = [{index: i, value: square.value}];
+
+        if (square.value === 'b') {
+            return squaresToOpen;
+        }
+        if (square.value !== 0) {
+            return squaresToOpen;
+        }
+
+        var adjacentSquareCoords = [
+            {row: position.row - 1, col: position.col - 1},
+            {row: position.row - 1, col: position.col},
+            {row: position.row - 1, col: position.col + 1},
+            {row: position.row, col: position.col - 1},
+            {row: position.row, col: position.col + 1},
+            {row: position.row + 1, col: position.col - 1},
+            {row: position.row + 1, col: position.col},
+            {row: position.row + 1, col: position.col + 1}
+        ];
+
+        return adjacentSquareCoords.reduce(function (squaresToOpen, coords) {
+            var i = getSquareIndexByCoords(coords);
+            return typeof i === 'number' ? squaresToOpen.concat(openSquaresByIndex(i)) : squaresToOpen;
+        }, squaresToOpen);
+    }
+
+    function restart() {
+        isFlagEnabled = false;
+        flags = [];
+        init();
+    }
+
+    function areAllSafeSquaresOpened() {
+        var numberOfOpened = 0;
+        squares.forEach(function(row) {
+            numberOfOpened += row.filter(function(square) {
+                return square.isOpen;
+            }).length;
+        });
+        
+        return (rowNumber * rowNumber - numberOfOpened) === bombsNumber;
+    }
+
+    function areAllFlagsCorrect() {
+        return flags.every(function(flag) {
+            return squares[flag.row][flag.col].value === 'b';
+        }) && (flags.length === bombsNumber);
+    }
+
+    function getFlagAndBombValidation() {
+        var bombs = [];
+        var bombIndeces = [];
+
+        squares.forEach(function(row, i) {
+            row.forEach(function(square, j) {
+                if (square.value === 'b') {
+                    var bomb = {value: 'b', index: getSquareIndexByCoords ({row: i, col: j})}
+                    var isFlagged = flags.some(function(flag) { return flag.index === bomb.index; });
+                    
+                    if (!isFlagged) {
+                        bombs.push(bomb);
+                    }
+                    bombIndeces.push(bomb.index);
+                }
+            });
+        });
+
+        var wrongFlags = flags.filter(function(flag) { return bombIndeces.indexOf(flag.index) === -1; });
+        return bombs.concat(wrongFlags);
+    }
+
+    return {
+        init,
+        putFlag,
+        toggleFlagEnabled: function() {
+            isFlagEnabled = !isFlagEnabled;
+        },
+        isFlagEnabled: function() {
+            return isFlagEnabled;
+        },
+        toggleFlag,
+        openSquaresByIndex,
+        restart,
+        areAllSafeSquaresOpened,
+        areAllFlagsCorrect,
+        getFlagAndBombValidation
+    };
+})();
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+var Controller = (function(UIController, GameController) {
+    var DOM = UIController.getDOMstrings();
+    var firstReveal = true;
+
+    function setupEventListeners() {
+        document.querySelector(DOM.enableFlagBtn).addEventListener('click', toggleFlagEnabled);
+        setupTapAndHold();
+        document.querySelector(DOM.container).addEventListener('contextmenu', toggleFlag);
+        document.querySelector(DOM.restartBtn).addEventListener('click', restart);
+        document.addEventListener('checkIfWinByOpenedSquares', checkIfWinByOpenedSquares);
+        document.addEventListener('checkIfWinByFlag', checkIfWinByFlag);
+        document.addEventListener('gameOver', showFlagAndBombValidation);
+    }
+
+    function setupTapAndHold() {
+        var holdStart;
+
+        document.querySelector(DOM.container).addEventListener('touchstart', function(e) {
+            document.querySelector(DOM.container).removeEventListener('contextmenu', toggleFlag);
+            document.querySelector(DOM.container).removeEventListener('mousedown', mousedown);
+            document.querySelector(DOM.container).removeEventListener('mouseup', mouseup);
+            
+            holdStart = new Date();
+            UIController.toggleEmojiO();
+        });
+        document.querySelector(DOM.container).addEventListener('touchend', function(e) {
+            var diff = new Date() - holdStart;
+            UIController.toggleEmojiO();
+            diff > 300 ? toggleFlag(e) : handleSquare(e);
+        });
+
+        document.querySelector(DOM.container).addEventListener('mousedown', mousedown);
+        document.querySelector(DOM.container).addEventListener('mouseup', mouseup);
+    }
+
+    function mousedown(e) {
+        if (e.button === 0) {
+            UIController.toggleEmojiO();
+        }
+    }
+    function mouseup(e) {
+        if (e.button === 0) {
+            UIController.toggleEmojiO();
+            handleSquare(e);
+        }
+    }
+
+    function init() {
+        GameController.init();
+        UIController.init();
+        setupEventListeners();
+    }
+
+    function toggleFlagEnabled(event) {
+        GameController.toggleFlagEnabled();
+        UIController.toggleFlagEnabled();
+    }
+
+    function handleSquare(event) {
+        if (
+            !event.target.classList.contains(DOM.squareClass)
+            || event.target.classList.contains(DOM.open)
+        ) {
+            return;
+        }
+
+        if (GameController.isFlagEnabled()) {
+            toggleFlag(event);
+            return;
+        }
+        if (event.target.classList.contains(DOM.flagIcon)) {
+            return;
+        }
+
+        var index = UIController.getIndexOfSquare(event.target);
+
+        /** [{index: 1, value: 'b'||0||5}] */
+        var squareData = GameController.openSquaresByIndex(index);
+
+        if (squareData[0].value === 'b' && firstReveal) {
+            GameController.init();
+            handleSquare(event);
+            return;
+        } else if (squareData[0].value === 'b') {
+            document.dispatchEvent(new Event('gameOver'));
+        }
+
+        firstReveal = false;
+
+        if (squareData) {
+            UIController.openSquares(squareData);
+        }
+
+        document.dispatchEvent(new Event('checkIfWinByOpenedSquares'));
+    };
+    
+    function restart() {
+        firstReveal = true;
+        GameController.restart();
+        UIController.restart();
+    }
+
+    function toggleFlag(event) {
+        event.preventDefault();
+
+        if (!event.target.classList.contains(DOM.squareClass) || event.target.classList.contains(DOM.open)) {
+            return;
+        }
+        
+        var index = UIController.getIndexOfSquare(event.target);
+        var isFlagAdded = GameController.toggleFlag(index);
+
+        if (isFlagAdded) {
+            UIController.putFlag(event.target);
+        } else {
+            UIController.removeFlag(event.target);
+        }
+
+        document.dispatchEvent(new Event('checkIfWinByFlag'));
+    }
+
+    function checkIfWinByOpenedSquares() {
+        if (GameController.areAllSafeSquaresOpened()) {
+            UIController.showWin();
+        }
+    }
+
+    function checkIfWinByFlag() {
+        if (GameController.areAllFlagsCorrect() && !firstReveal) {
+            UIController.showWin();
+        }
+    }
+
+    function showFlagAndBombValidation() {
+        if (firstReveal) {
+            restart();
+        } else {
+            var squares = GameController.getFlagAndBombValidation();
+            UIController.showFlagAndBombValidation(squares);
+        }
+    }
+
+    return {
+        init
+    };
+})(UI, Game);
+
+document.addEventListener('DOMContentLoaded', function() {
+    Controller.init();
+});
+
+function toggleHint(e) {
+    var hints = document.querySelectorAll('.hint');
+    hints[0].classList.toggle('hidden');
+    hints[1].classList.toggle('hidden');
+    e.stopPropagation();
+}</script>
+</body>
+
+</html>
